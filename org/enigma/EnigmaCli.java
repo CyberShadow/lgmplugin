@@ -290,7 +290,7 @@ public final class EnigmaCli {
 	public static String initialize(String fn, ResNode root) throws Exception {
 		File file = new File(fn);
 		if (!file.exists())
-			throw new FileNotFoundException(fn);
+			throw new FileNotFoundException("Input file not found: " + fn);
 		LibManager.autoLoad();
 
 		FileChooser.addDefaultReadersAndWriters();

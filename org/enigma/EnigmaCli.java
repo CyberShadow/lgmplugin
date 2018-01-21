@@ -390,16 +390,11 @@ public final class EnigmaCli {
 		return DRIVER.compileEGMf(es, outname, mode);
 	}
 
-	private static UnsatisfiedLinkError attemptLib() {
-		try {
-			String lib = "compileEGMf"; //$NON-NLS-1$
-			NativeLibrary.addSearchPath(lib, "."); //$NON-NLS-1$
-			NativeLibrary.addSearchPath(lib, LGM.workDir.getParent());
-			DRIVER = (EnigmaDriver) Native.loadLibrary(lib, EnigmaDriver.class);
-			return null;
-		} catch (UnsatisfiedLinkError e) {
-			return e;
-		}
+	private static void attemptLib() {
+		String lib = "compileEGMf"; //$NON-NLS-1$
+		NativeLibrary.addSearchPath(lib, "."); //$NON-NLS-1$
+		NativeLibrary.addSearchPath(lib, LGM.workDir.getParent());
+		DRIVER = (EnigmaDriver) Native.loadLibrary(lib, EnigmaDriver.class);
 	}
 
 	public static class CliOutputHandler implements OutputHandler {

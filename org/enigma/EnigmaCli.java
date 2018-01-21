@@ -56,9 +56,8 @@ public final class EnigmaCli {
 	private EnigmaCli() {
 	}
 
-	public static void error(String err) {
-		System.err.println(prog + ": " + err); //$NON-NLS-1$
-		System.exit(-1);
+	public static void error(String err) throws Exception {
+		throw new Exception(err);
 	}
 
 	private static enum ArgumentType {
@@ -167,7 +166,7 @@ public final class EnigmaCli {
 		return new TargetsOrError(result, "");
 	}
 
-	public static void main(String[] args) throws ProjectFormatException {
+	public static void main(String[] args) throws Exception {
 		final String helpString =
 			"Name:\n" +
 			"  enigma.jar\n" +
@@ -254,17 +253,11 @@ public final class EnigmaCli {
 		}
 
 		int compilation_status = 0;
-		try {
-			initialize(inputFile, null);
-			if (syntax)
-				syntaxChecker(LGM.currentFile, LGM.root, parsedTargets.targetToValue);
-			else
-				compilation_status = compile(LGM.currentFile, LGM.root, outname, parsedTargets.targetToValue);
-		} catch (IOException e) {
-			error(e.getMessage());
-		} catch (GmFormatException e) {
-			error(e.getMessage());
-		}
+		initialize(inputFile, null);
+		if (syntax)
+			syntaxChecker(LGM.currentFile, LGM.root, parsedTargets.targetToValue);
+		else
+			compilation_status = compile(LGM.currentFile, LGM.root, outname, parsedTargets.targetToValue);
 
 		System.out.println("CLI Done.");
 		System.exit(compilation_status); // FIXME: Find out why it doesn't terminate normally
@@ -294,7 +287,7 @@ public final class EnigmaCli {
 				new SingletonResourceHolder<EnigmaSettings>(new EnigmaSettings()));
 	}
 
-	public static String initialize(String fn, ResNode root) throws IOException, ProjectFormatException {
+	public static String initialize(String fn, ResNode root) throws Exception {
 		File file = new File(fn);
 		if (!file.exists())
 			throw new FileNotFoundException(fn);
@@ -324,11 +317,12 @@ public final class EnigmaCli {
 		return DRIVER.libInit(new EnigmaCallbacks(new CliOutputHandler())); // returns String on toolchain failure
 	}
 
-	public static void syntaxChecker(ProjectFile f, ResNode root) {
+	public static void syntaxChecker(ProjectFile f, ResNode root) throws Exception {
 		syntaxChecker(f, root, null);
 	}
 
-	private static void syntaxChecker(ProjectFile f, ResNode root, Map<String, TargetSelection> newTargets) {
+	private static void syntaxChecker(ProjectFile f, ResNode root, Map<String, TargetSelection> newTargets)
+			throws Exception {
 		SyntaxError se = syntaxCheck(f, root, newTargets);
 		if (se == null || se.absoluteIndex == -1)
 			System.out.println("No syntax errors found.");

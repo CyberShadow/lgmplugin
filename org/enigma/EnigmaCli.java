@@ -265,7 +265,7 @@ public final class EnigmaCli
 		int compilation_status = 0;
 		try
 			{
-			initailize(inputFile,null);
+			initialize(inputFile,null);
 			if (syntax)
 				syntaxChecker(LGM.currentFile,LGM.root,parsedTargets.targetToValue);
 			else
@@ -308,7 +308,7 @@ public final class EnigmaCli
 				new EnigmaSettings()));
 		}
 
-	public static String initailize(String fn, ResNode root) throws IOException, ProjectFormatException
+	public static String initialize(String fn, ResNode root) throws IOException, ProjectFormatException
 		{
 		File file = new File(fn);
 		if (!file.exists()) throw new FileNotFoundException(fn);

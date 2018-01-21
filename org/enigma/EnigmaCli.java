@@ -370,6 +370,10 @@ public final class EnigmaCli {
 		// Generate arguments for compile
 		EnigmaStruct es = EnigmaWriter.prepareStruct(f, root,
 			new EnigmaWriter.API() {
+				@Override
+				public void showMessage(String s) {
+					System.err.println(s);
+				}
 			});
 
 		// XXX: Handle custom modes?

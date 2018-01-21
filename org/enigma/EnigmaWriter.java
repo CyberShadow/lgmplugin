@@ -48,7 +48,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.zip.DeflaterOutputStream;
 
-import javax.swing.JOptionPane;
 import javax.xml.bind.DatatypeConverter;
 
 import org.enigma.backend.EnigmaStruct;
@@ -123,6 +122,7 @@ public final class EnigmaWriter {
 	static Map<BufferedImage, ByteArrayOutputStream> imageCache = new WeakHashMap<BufferedImage, ByteArrayOutputStream>();
 
 	public interface API {
+		public void showMessage(String foo);
 	}
 
 	private API api;
@@ -1130,7 +1130,7 @@ public final class EnigmaWriter {
 										// 1 if, so its important to track the
 										// number
 
-	public static String getActionsCode(ActionContainer ac) {
+	public String getActionsCode(ActionContainer ac) {
 		final String nl = System.getProperty("line.separator"); //$NON-NLS-1$
 		StringBuilder code = new StringBuilder();
 
@@ -1141,7 +1141,7 @@ public final class EnigmaWriter {
 			LibAction la = act.getLibAction();
 			if (la == null) {
 				if (!actionDemise) {
-					JOptionPane.showMessageDialog(null, Messages.format(
+					api.showMessage(Messages.format(
 							"EnigmaWriter.UNSUPPORTED_DND", ac.toString())); //$NON-NLS-1$
 					actionDemise = true;
 				}

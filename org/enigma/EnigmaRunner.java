@@ -659,6 +659,10 @@ public class EnigmaRunner implements ActionListener,SubframeListener,ReloadListe
 			ef.progress(10,Messages.getString("EnigmaRunner.POPULATING")); //$NON-NLS-1$
 			EnigmaStruct es = EnigmaWriter.prepareStruct(LGM.currentFile,LGM.root,
 				new EnigmaWriter.API() {
+					@Override
+					public void showMessage(String s) {
+						JOptionPane.showMessageDialog(null, s);
+					}
 				});
 			ef.progress(20,Messages.getString("EnigmaRunner.CALLING")); //$NON-NLS-1$
 			System.out.println("Plugin: Delegating to ENIGMA (out of my hands now)");

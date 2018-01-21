@@ -36,6 +36,7 @@ import org.lateralgm.file.ProjectFormatException;
 import org.lateralgm.main.FileChooser;
 import org.lateralgm.main.FileChooser.FileReader;
 import org.lateralgm.main.LGM;
+import org.lateralgm.resources.GameSettings;
 import org.lateralgm.resources.Resource;
 import org.lateralgm.resources.Script;
 import org.lateralgm.resources.library.LibManager;
@@ -360,7 +361,7 @@ public final class EnigmaCli {
 		return compile(f, root, null);
 	}
 
-	private static int compile(ProjectFile f, ResNode root, String outname, Map<String, TargetSelection> newTargets)
+	private static int compile(final ProjectFile f, ResNode root, String outname, Map<String, TargetSelection> newTargets)
 			throws FileNotFoundException, GmFormatException {
 		ResourceHolder<EnigmaSettings> rh = f.resMap.get(EnigmaSettings.class);
 		EnigmaSettings ess = rh == null ? new EnigmaSettings() : rh.getResource();
@@ -373,6 +374,11 @@ public final class EnigmaCli {
 				@Override
 				public void showMessage(String s) {
 					System.err.println(s);
+				}
+
+				@Override
+				public GameSettings getGameSettings() {
+					return f.gameSettings.firstElement();
 				}
 			});
 

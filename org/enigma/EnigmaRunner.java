@@ -88,6 +88,7 @@ import org.lateralgm.main.LGM;
 import org.lateralgm.main.LGM.ReloadListener;
 import org.lateralgm.main.LGM.SingletonPluginResource;
 import org.lateralgm.main.Listener;
+import org.lateralgm.resources.GameSettings;
 import org.lateralgm.resources.Resource;
 import org.lateralgm.resources.Script;
 import org.lateralgm.subframes.ActionFrame;
@@ -662,6 +663,11 @@ public class EnigmaRunner implements ActionListener,SubframeListener,ReloadListe
 					@Override
 					public void showMessage(String s) {
 						JOptionPane.showMessageDialog(null, s);
+					}
+
+					@Override
+					public GameSettings getGameSettings() {
+						return LGM.getSelectedConfig();
 					}
 				});
 			ef.progress(20,Messages.getString("EnigmaRunner.CALLING")); //$NON-NLS-1$

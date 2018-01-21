@@ -123,6 +123,7 @@ public final class EnigmaWriter {
 
 	public interface API {
 		public void showMessage(String foo);
+		public org.lateralgm.resources.GameSettings getGameSettings();
 	}
 
 	private API api;
@@ -228,7 +229,7 @@ public final class EnigmaWriter {
 	}
 
 	protected void populateSettings() {
-		org.lateralgm.resources.GameSettings ig = LGM.getSelectedConfig();
+		org.lateralgm.resources.GameSettings ig = api.getGameSettings();
 		GameSettings og = o.gameSettings;
 
 		og.gameId = ig.get(PGameSettings.GAME_ID);

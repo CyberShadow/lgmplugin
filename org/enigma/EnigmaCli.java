@@ -44,8 +44,7 @@ import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.StringArray;
 
-public final class EnigmaCli
-	{
+public final class EnigmaCli {
 	public static final String prog = "enigma"; //$NON-NLS-1$
 	public static EnigmaDriver DRIVER;
 
@@ -54,15 +53,13 @@ public final class EnigmaCli
 	private static final String targetsStart = "-targets=";
 	private static final String outputStart = "-output=";
 
-	private EnigmaCli()
-		{
-		}
+	private EnigmaCli() {
+	}
 
-	public static void error(String err)
-		{
+	public static void error(String err) {
 		System.err.println(prog + ": " + err); //$NON-NLS-1$
 		System.exit(-1);
-		}
+	}
 
 	private static enum ArgumentType {
 		HELP, SYNTAX, TARGETS, INPUTFILE, OUTPUTNAME, UNKNOWN
@@ -87,24 +84,19 @@ public final class EnigmaCli
 			if (str.equals("-h") || str.equals("--help") || str.equals("-?")) {
 				argType = ArgumentType.HELP;
 				value = "";
-			}
-			else if (str.equals("-s") || str.equals("--syntax")) {
+			} else if (str.equals("-s") || str.equals("--syntax")) {
 				argType = ArgumentType.SYNTAX;
 				value = "";
-			}
-			else if (str.startsWith(targetsStart)) {
+			} else if (str.startsWith(targetsStart)) {
 				argType = ArgumentType.TARGETS;
 				value = str.substring(targetsStart.length());
-			}
-			else if (str.startsWith(outputStart)) {
+			} else if (str.startsWith(outputStart)) {
 				argType = ArgumentType.OUTPUTNAME;
 				value = str.substring(outputStart.length());
-			}
-			else if (!str.startsWith("-")) {
+			} else if (!str.startsWith("-")) {
 				argType = ArgumentType.INPUTFILE;
 				value = str;
-			}
-			else {
+			} else {
 				argType = ArgumentType.UNKNOWN;
 				value = str;
 			}
@@ -167,15 +159,15 @@ public final class EnigmaCli
 				}
 			}
 			if (!found) {
-				return new TargetsOrError(result, "API target not found. API type, target: " + key + ", " + valueString);
+				return new TargetsOrError(result,
+						"API target not found. API type, target: " + key + ", " + valueString);
 			}
 		}
 
 		return new TargetsOrError(result, "");
 	}
 
-	public static void main(String[] args) throws ProjectFormatException
-		{
+	public static void main(String[] args) throws ProjectFormatException {
 		final String helpString =
 			"Name:\n" +
 			"  enigma.jar\n" +
@@ -225,7 +217,8 @@ public final class EnigmaCli
 					inputFilesString.append(str);
 					inputFilesString.append("   ");
 				}
-				error("Wrong number of input files. Number: " + inputFiles.size() + ", input files: " + inputFilesString.toString());
+				error("Wrong number of input files. Number: " + inputFiles.size() + ", input files: "
+						+ inputFilesString.toString());
 			}
 			inputFile = inputFiles.get(0);
 		}
@@ -253,38 +246,32 @@ public final class EnigmaCli
 			List<String> outputNames = getValues(parsedArguments, ArgumentType.OUTPUTNAME);
 			if (outputNames.size() == 0) {
 				outname = null;
-			}
-			else if (outputNames.size() == 1) {
+			} else if (outputNames.size() == 1) {
 				outname = outputNames.get(0);
-			}
-			else {
+			} else {
 				error("Output name indicated multiple times.");
 			}
 		}
 
 		int compilation_status = 0;
-		try
-			{
-			initialize(inputFile,null);
+		try {
+			initialize(inputFile, null);
 			if (syntax)
-				syntaxChecker(LGM.currentFile,LGM.root,parsedTargets.targetToValue);
+				syntaxChecker(LGM.currentFile, LGM.root, parsedTargets.targetToValue);
 			else
-				compilation_status = compile(LGM.currentFile,LGM.root,outname,parsedTargets.targetToValue);
-			}
-		catch (IOException e)
-			{
+				compilation_status = compile(LGM.currentFile, LGM.root, outname, parsedTargets.targetToValue);
+		} catch (IOException e) {
 			error(e.getMessage());
-			}
-		catch (GmFormatException e)
-			{
+		} catch (GmFormatException e) {
 			error(e.getMessage());
-			}
-
-		System.out.println("CLI Done.");
-		System.exit(compilation_status); //FIXME: Find out why it doesn't terminate normally
 		}
 
-	private static void transformEnigmaSettings(EnigmaSettings enigmaSettings, Map<String, TargetSelection> newTargets) {
+		System.out.println("CLI Done.");
+		System.exit(compilation_status); // FIXME: Find out why it doesn't terminate normally
+	}
+
+	private static void transformEnigmaSettings(EnigmaSettings enigmaSettings,
+			Map<String, TargetSelection> newTargets) {
 		if (newTargets != null) {
 			for (Map.Entry<String, TargetSelection> target : newTargets.entrySet()) {
 				enigmaSettings.targets.put(target.getKey(), target.getValue());
@@ -292,78 +279,74 @@ public final class EnigmaCli
 		}
 	}
 
-	private static void addResourceHook()
-		{
+	private static void addResourceHook() {
 		EgmIO io = new EgmIO();
 		FileChooser.readers.add(io);
 		FileChooser.writers.add(io);
 
 		Resource.kinds.add(EnigmaSettings.class);
-		Resource.kindsByName3.put("EGS",EnigmaSettings.class);
+		Resource.kindsByName3.put("EGS", EnigmaSettings.class);
 		String name = Messages.getString("EnigmaRunner.RESNODE_NAME"); //$NON-NLS-1$
-		Resource.kindNames.put(EnigmaSettings.class,name);
-		Resource.kindNamesPlural.put(EnigmaSettings.class,name);
+		Resource.kindNames.put(EnigmaSettings.class, name);
+		Resource.kindNamesPlural.put(EnigmaSettings.class, name);
 
-		LGM.currentFile.resMap.put(EnigmaSettings.class,new SingletonResourceHolder<EnigmaSettings>(
-				new EnigmaSettings()));
-		}
+		LGM.currentFile.resMap.put(EnigmaSettings.class,
+				new SingletonResourceHolder<EnigmaSettings>(new EnigmaSettings()));
+	}
 
-	public static String initialize(String fn, ResNode root) throws IOException, ProjectFormatException
-		{
+	public static String initialize(String fn, ResNode root) throws IOException, ProjectFormatException {
 		File file = new File(fn);
-		if (!file.exists()) throw new FileNotFoundException(fn);
+		if (!file.exists())
+			throw new FileNotFoundException(fn);
 		LibManager.autoLoad();
 
 		FileChooser.addDefaultReadersAndWriters();
 		addResourceHook();
 
-		if (root == null) root = LGM.newRoot();
+		if (root == null)
+			root = LGM.newRoot();
 
 		URI uri = file.toURI();
 		FileReader reader = FileChooser.findReader(uri);
 
-		ProjectFile f =  new ProjectFile();
+		ProjectFile f = new ProjectFile();
 		f.uri = uri;
-		reader.read(uri.toURL().openStream(),f,uri,LGM.newRoot());
+		reader.read(uri.toURL().openStream(), f, uri, LGM.newRoot());
 		LGM.currentFile = f;
 
-		try
-			{
+		try {
 			attemptLib();
-			}
-		catch (UnsatisfiedLinkError e)
-			{
+		} catch (UnsatisfiedLinkError e) {
 			error("Unable to communicate with the library,\n"
 					+ "either because it could not be found or uses methods different from those expected.\n"
 					+ "The exact error is:\n" + e.getMessage());
-			}
-		return DRIVER.libInit(new EnigmaCallbacks(new CliOutputHandler())); //returns String on toolchain failure
 		}
+		return DRIVER.libInit(new EnigmaCallbacks(new CliOutputHandler())); // returns String on toolchain failure
+	}
 
 	public static void syntaxChecker(ProjectFile f, ResNode root) {
 		syntaxChecker(f, root, null);
 	}
 
-	private static void syntaxChecker(ProjectFile f, ResNode root, Map<String, TargetSelection> newTargets)
-		{
-		SyntaxError se = syntaxCheck(f,root,newTargets);
+	private static void syntaxChecker(ProjectFile f, ResNode root, Map<String, TargetSelection> newTargets) {
+		SyntaxError se = syntaxCheck(f, root, newTargets);
 		if (se == null || se.absoluteIndex == -1)
 			System.out.println("No syntax errors found.");
 		else
 			error(se.line + ":" + se.position + "::" + se.errorString);
-		}
+	}
 
 	public static SyntaxError syntaxCheck(ProjectFile f, ResNode root) {
 		return syntaxCheck(f, root, null);
 	}
 
-	private static SyntaxError syntaxCheck(ProjectFile f, ResNode root, Map<String, TargetSelection> newTargets)
-		{
+	private static SyntaxError syntaxCheck(ProjectFile f, ResNode root, Map<String, TargetSelection> newTargets) {
 		ResourceHolder<EnigmaSettings> rh = f.resMap.get(EnigmaSettings.class);
 		EnigmaSettings ess = rh == null ? new EnigmaSettings() : rh.getResource();
 		transformEnigmaSettings(ess, newTargets);
-		SyntaxError err = ess.commitToDriver(DRIVER); //returns SyntaxError
-		if (err.absoluteIndex != -1) return err;
+		SyntaxError err = ess.commitToDriver(DRIVER); // returns SyntaxError
+		if (err.absoluteIndex != -1)
+			return err;
 
 		int scrNum = LGM.currentFile.resMap.getList(Script.class).size();
 		String osl[] = new String[scrNum];
@@ -373,92 +356,82 @@ public final class EnigmaCli
 		StringArray scripts = new StringArray(osl);
 
 		for (Script s : isl)
-			if ((err = DRIVER.syntaxCheck(scrNum,scripts,s.getCode())).absoluteIndex != -1) return err;
+			if ((err = DRIVER.syntaxCheck(scrNum, scripts, s.getCode())).absoluteIndex != -1)
+				return err;
 
 		return null;
-		}
+	}
 
 	public static int compile(ProjectFile f, ResNode root, String outname) {
 		return compile(f, root, null);
 	}
 
-	private static int compile(ProjectFile f, ResNode root, String outname, Map<String, TargetSelection> newTargets) throws FileNotFoundException,
-			GmFormatException
-		{
+	private static int compile(ProjectFile f, ResNode root, String outname, Map<String, TargetSelection> newTargets)
+			throws FileNotFoundException, GmFormatException {
 		ResourceHolder<EnigmaSettings> rh = f.resMap.get(EnigmaSettings.class);
 		EnigmaSettings ess = rh == null ? new EnigmaSettings() : rh.getResource();
 		transformEnigmaSettings(ess, newTargets);
-		ess.commitToDriver(DRIVER); //returns SyntaxError
+		ess.commitToDriver(DRIVER); // returns SyntaxError
 
-		//Generate arguments for compile
-		EnigmaStruct es = EnigmaWriter.prepareStruct(f,root);
+		// Generate arguments for compile
+		EnigmaStruct es = EnigmaWriter.prepareStruct(f, root);
 
-		//XXX: Handle custom modes?
+		// XXX: Handle custom modes?
 		int mode = EnigmaRunner.MODE_COMPILE;
 
-		if (outname == null)
-			{
+		if (outname == null) {
 			outname = new File(f.uri).getAbsolutePath();
 			String ext = ess.targets.get(TargetHandler.COMPILER).ext;
-			outname = outname.substring(0,outname.lastIndexOf('.'));
-			if (ext != null) outname = outname + ext;
-			}
+			outname = outname.substring(0, outname.lastIndexOf('.'));
+			if (ext != null)
+				outname = outname + ext;
+		}
 
-		//FIXME: Make compliant with spec2
+		// FIXME: Make compliant with spec2
 		TargetSelection compiler = ess.targets.get(TargetHandler.COMPILER);
 		if (!compiler.outputexe.equals("$tempfile")) //$NON-NLS-1$
 			outname = new File(compiler.outputexe).getAbsolutePath();
 
 		System.out.println("Plugin: Delegating to ENIGMA (out of my hands now)");
-		return DRIVER.compileEGMf(es,outname,mode);
-		}
+		return DRIVER.compileEGMf(es, outname, mode);
+	}
 
-	private static UnsatisfiedLinkError attemptLib()
-		{
-		try
-			{
+	private static UnsatisfiedLinkError attemptLib() {
+		try {
 			String lib = "compileEGMf"; //$NON-NLS-1$
-			NativeLibrary.addSearchPath(lib,"."); //$NON-NLS-1$
-			NativeLibrary.addSearchPath(lib,LGM.workDir.getParent());
-			DRIVER = (EnigmaDriver) Native.loadLibrary(lib,EnigmaDriver.class);
+			NativeLibrary.addSearchPath(lib, "."); //$NON-NLS-1$
+			NativeLibrary.addSearchPath(lib, LGM.workDir.getParent());
+			DRIVER = (EnigmaDriver) Native.loadLibrary(lib, EnigmaDriver.class);
 			return null;
-			}
-		catch (UnsatisfiedLinkError e)
-			{
+		} catch (UnsatisfiedLinkError e) {
 			return e;
-			}
-		}
-
-	public static class CliOutputHandler implements OutputHandler
-		{
-		@Override
-		public void append(String s)
-			{
-			System.out.print(s);
-			}
-
-		@Override
-		public void clear()
-			{
-			//clearing the terminal doesn't make sense
-			}
-
-		@Override
-		public void open()
-			{
-			//terminal already open
-			}
-
-		@Override
-		public void progress(int i)
-			{
-			//progress/tip not handled at this time
-			}
-
-		@Override
-		public void tip(String s)
-			{
-			//progress/tip not handled at this time
-			}
 		}
 	}
+
+	public static class CliOutputHandler implements OutputHandler {
+		@Override
+		public void append(String s) {
+			System.out.print(s);
+		}
+
+		@Override
+		public void clear() {
+			// clearing the terminal doesn't make sense
+		}
+
+		@Override
+		public void open() {
+			// terminal already open
+		}
+
+		@Override
+		public void progress(int i) {
+			// progress/tip not handled at this time
+		}
+
+		@Override
+		public void tip(String s) {
+			// progress/tip not handled at this time
+		}
+	}
+}

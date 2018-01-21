@@ -657,7 +657,9 @@ public class EnigmaRunner implements ActionListener,SubframeListener,ReloadListe
 			EnigmaRunner.addDefaultExceptionHandler();
 			ef.open();
 			ef.progress(10,Messages.getString("EnigmaRunner.POPULATING")); //$NON-NLS-1$
-			EnigmaStruct es = EnigmaWriter.prepareStruct(LGM.currentFile,LGM.root);
+			EnigmaStruct es = EnigmaWriter.prepareStruct(LGM.currentFile,LGM.root,
+				new EnigmaWriter.API() {
+				});
 			ef.progress(20,Messages.getString("EnigmaRunner.CALLING")); //$NON-NLS-1$
 			System.out.println("Plugin: Delegating to ENIGMA (out of my hands now)");
 			System.out.println(DRIVER.compileEGMf(es,efi == null ? null : getUnixPath(efi.getAbsolutePath()),mode));

@@ -368,7 +368,9 @@ public final class EnigmaCli {
 		ess.commitToDriver(DRIVER); // returns SyntaxError
 
 		// Generate arguments for compile
-		EnigmaStruct es = EnigmaWriter.prepareStruct(f, root);
+		EnigmaStruct es = EnigmaWriter.prepareStruct(f, root,
+			new EnigmaWriter.API() {
+			});
 
 		// XXX: Handle custom modes?
 		int mode = EnigmaRunner.MODE_COMPILE;

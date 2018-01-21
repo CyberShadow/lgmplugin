@@ -122,14 +122,20 @@ public final class EnigmaWriter {
 
 	static Map<BufferedImage, ByteArrayOutputStream> imageCache = new WeakHashMap<BufferedImage, ByteArrayOutputStream>();
 
-	private EnigmaWriter(ProjectFile in, EnigmaStruct out, ResNode root) {
+	public interface API {
+	}
+
+	private API api;
+
+	private EnigmaWriter(ProjectFile in, EnigmaStruct out, ResNode root, API api) {
 		i = in;
 		o = out;
 		this.root = root;
+		this.api = api;
 	}
 
-	public static EnigmaStruct prepareStruct(ProjectFile f, ResNode root) {
-		EnigmaWriter ew = new EnigmaWriter(f, new EnigmaStruct(), root);
+	public static EnigmaStruct prepareStruct(ProjectFile f, ResNode root, API api) {
+		EnigmaWriter ew = new EnigmaWriter(f, new EnigmaStruct(), root, api);
 		ew.populateStruct();
 		return ew.o;
 	}
